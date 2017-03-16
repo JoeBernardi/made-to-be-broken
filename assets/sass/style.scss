@@ -199,7 +199,7 @@ body {
 		}
 	}
 
-	&.searching {
+	&.searching #content {
 		#initial-form {
 			display: none;
 		}
@@ -208,7 +208,7 @@ body {
 		}
 	}
 
-	&.searched {
+	&.searched #content {
 		#initial-form, #loading-screen {
 			display: none;
 		}

@@ -149,13 +149,13 @@ body {
         left: 20px; }
       body #meta-links a#twitter-link {
         right: 20px; }
-  body.searching #initial-form {
+  body.searching #content #initial-form {
     display: none; }
-  body.searching #loading-screen {
+  body.searching #content #loading-screen {
     display: flex; }
-  body.searched #initial-form, body.searched #loading-screen {
+  body.searched #content #initial-form, body.searched #content #loading-screen {
     display: none; }
-  body.searched #videos-container {
+  body.searched #content #videos-container {
     display: block; }
   body.about #content {
     display: none; }
