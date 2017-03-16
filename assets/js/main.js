@@ -1,97 +1,110 @@
-const request = require('browser-request'),
-      youTubeIframeLoader = require('youtube-iframe'),
-      base64 = require('base-64'),
-      utils = require('../../utils');
+const request = require('browser-request')
+const youTubeIframeLoader = require('youtube-iframe')
+const base64 = require('base-64')
+const utils = require('../../utils')
 
-let preparedVideos = 0,
-    playerRefs = [];
+let preparedVideos = 0
+let playerRefs = []
 
-document.addEventListener("DOMContentLoaded", function() {
+let artistInput = ''
+let songInput = ''
+
+document.addEventListener('DOMContentLoaded', function () {
   checkForQuery() ? getResults(...checkForQuery()) : ''
 
-  const searchButton = document.getElementById("submit"),
-        playButton = document.getElementById("play"),
-        stopButton = document.getElementById("stop"),
-        suggestion = document.getElementById("suggestion");
-        artistInput = document.getElementById("artist")
-        songInput = document.getElementById("song-title")
+  const searchButton = document.getElementById('submit')
+  const playButton = document.getElementById('play')
+  const stopButton = document.getElementById('stop')
+  const suggestion = document.getElementById('suggestion')
+  const aboutLink = document.getElementById('about-link')
 
-  utils.randomJam(artistInput, songInput);
+  artistInput = document.getElementById('artist')
+  songInput = document.getElementById('song-title')
 
-  searchButton.addEventListener("click", () =>
+  utils.randomJam(artistInput, songInput)
+
+  searchButton.addEventListener('click', () =>
     getResults(songInput.value, artistInput.value))
 
-  playButton.addEventListener("click", function() {
-    playerRefs.forEach((video) => video.playVideo());
-  });
+  playButton.addEventListener('click', function () {
+    playerRefs.forEach((video) => video.playVideo())
+  })
 
-  suggestion.addEventListener("click", () => utils.randomJam(artistInput, songInput));
+  aboutLink.addEventListener('click', function (e) {
+    e.preventDefault()
+    document.body.classList.toggle('about')
+  })
+  suggestion.addEventListener('click', () => utils.randomJam(artistInput, songInput))
 
-  stopButton.addEventListener("click", () => resetState())
-});
+  stopButton.addEventListener('click', () => resetState())
+})
 
-function getResults(song, artist) {
-  document.body.classList.add("searching");
+function getResults (song, artist) {
+  document.body.classList.add('searching')
   const data = {
     search: `${artist} ${song}`
   }
   const headers = {
     'Content-Type': 'application/json'
   }
-  request.post({url: '/', body: JSON.stringify(data), headers: headers}, function(err, resp) {
-    document.getElementById("big-artist").innerHTML = artist;
-    document.getElementById("big-title").innerHTML = song;
-    if(!checkForQuery()) {
-      const hash = base64.encode(`${song}///${artist}`);
-      window.history.pushState({}, 'Title', `?j=${hash}`);
+  request.post({url: '/', body: JSON.stringify(data), headers: headers}, function (err, resp) {
+    if (err) {
+      console.log(err)
     }
-    resp.body === "noJams" ? resetState('&#8650; Nuts: couldn\'t find enough videos. try again &#8650;') : stageVideoHtml(JSON.parse(resp.body))
+    document.getElementById('big-artist').innerHTML = artist
+    document.getElementById('big-title').innerHTML = song
+    if (!checkForQuery()) {
+      const hash = base64.encode(`${song}///${artist}`)
+      window.history.pushState({}, 'Title', `?j=${hash}`)
+    }
+    resp.body === 'noJams' ? resetState('&#8650 Nuts: couldn\'t find enough videos. Try again! &#8650') : stageVideoHtml(JSON.parse(resp.body))
   })
 }
 
-function stageVideoHtml(videoArray) {
+function stageVideoHtml (videoArray) {
+  const videoContainer = document.getElementById('video')
   videoArray.forEach((videoId, index) => {
-    const node = document.createElement("div");
-    node.setAttribute("id",`video-${index}`);
-    video.appendChild(node)
-    youTubeIframeLoader.load(function(YT) {
+    const node = document.createElement('div')
+    node.setAttribute('id', `video-${index}`)
+    videoContainer.appendChild(node)
+    youTubeIframeLoader.load(function (YT) {
       playerRefs.push(new YT.Player(`video-${index}`, {
-          height: '250',
-          width: '640',
-          videoId: videoId,
-          events: {
-            'onReady': onPlayerReady
-          }
-      }));
-    });
+        height: '250',
+        width: '640',
+        videoId: videoId,
+        events: {
+          'onReady': onPlayerReady
+        }
+      }))
+    })
   })
 }
 
-function onPlayerReady(event) {
-  if(++preparedVideos === playerRefs.length-1) {
-    document.body.classList.remove("searching")
-    document.body.classList.add("searched")
+function onPlayerReady (event) {
+  if (++preparedVideos === playerRefs.length - 1) {
+    document.body.classList.remove('searching')
+    document.body.classList.add('searched')
   }
 }
 
-function resetState(err) {
-  const videoContainer = document.getElementById("video");
-  var cNode = videoContainer.cloneNode(false);
-  videoContainer.parentNode.replaceChild(cNode,videoContainer);
+function resetState (err) {
+  const videoContainer = document.getElementById('video')
+  var cNode = videoContainer.cloneNode(false)
+  videoContainer.parentNode.replaceChild(cNode, videoContainer)
 
   utils.randomJam(artistInput, songInput)
-  window.history.pushState({}, 'Title', '/');
-  if(err) {
-    document.getElementById("error").innerHTML = err;
+  window.history.pushState({}, 'Title', '/')
+  if (err) {
+    document.getElementById('error').innerHTML = err
   }
-  document.body.classList = "";
-  let playerRefs = [];
-  let preparedVideos = 0;
+  document.body.classList = ''
+  playerRefs = []
+  preparedVideos = 0
 }
 
-function checkForQuery() {
-  var match = RegExp('[?&]j=([^&]*)').exec(window.location.search);
-  return match ?
-    base64.decode(decodeURIComponent(match[1].replace(/\+/g, ' '))).split('///') :
-    false;
+function checkForQuery () {
+  var match = RegExp('[?&]j=([^&]*)').exec(window.location.search)
+  return match
+    ? base64.decode(decodeURIComponent(match[1].replace(/\+/g, ' '))).split('///')
+    : false
 }

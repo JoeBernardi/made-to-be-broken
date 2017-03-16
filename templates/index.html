@@ -23,40 +23,56 @@
   </a>
 </div>
 
-<div id="error"></div>
-<div id="initial-form">
-  <div id="searcher">
-    <label for="artist">Artist:</label>
-    <input type="text" value="" id="artist"/>
-    <label for="song-title">Song Title:</label>
-    <input type="text" value="" id="song-title"/>
-    <div id="submit">All Together, Now!</div>
-    <div id="suggestion">(Or Get Another Suggestion)</div>
+<div id="content">
+  <div id="error"></div>
+  <div id="initial-form">
+    <div id="searcher">
+      <label for="artist">Artist:</label>
+      <input type="text" value="" id="artist"/>
+      <label for="song-title">Song Title:</label>
+      <input type="text" value="" id="song-title"/>
+      <div id="submit">All Together, Now!</div>
+      <div id="suggestion">(Or Get Another Suggestion)</div>
+    </div>
+  </div>
+
+  <div id="loading-screen">
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+  </div>
+
+  <div id="videos-container">
+    <h1><span id="big-artist"></span> - <span id="big-title"></span></h1>
+    <div id="video">
+    </div>
+    <div id="controls">
+      <div id="stop">New Song</div>
+      <div id="play">Play</div>
+    </div>
   </div>
 </div>
 
-<div id="loading-screen">
-  <div></div>
-  <div></div>
-  <div></div>
-  <div></div>
-  <div></div>
-</div>
+<div id="about">
+  <h1>About</h1>
+  <p>YouTube. Bored teenagers and frat guys hurting each other. People doing everything a human being is capable of doing, then other people doing those things as quickly as possible, then a third group of people doing those things as slowly as possible. An amount of ukulele players far higher than I'd ever expect. Cats and dogs. If you need a video of an extremely intimidating-looking skinhead smoking an entire cigarette in one drag, you have arrived at an extremely strange crossroads in your life; regardless, <a href="http://www.youtube.com/watch?v=sA8fmJulHMs" target="_blank">YouTube has you covered</a>. If you need the music video for Weezer's classic song &ldquo;Buddy Holly&rdquo; played backwards: <a href="http://www.youtube.com/watch?v=Zt0oXQ1qXZ0" target="_blank">YouTube</a>. Every civilization gets the Library of Alexandria that it deserves. Wikipedia can (and should) collect all the knowledge it wants; ours is still going to be YouTube.</p>
 
-<div id="videos-container">
-  <h1><span id="big-artist"></span> - <span id="big-title"></span></h1>
-  <div id="video">
-  </div>
-  <div id="controls">
-    <div id="stop">New Song</div>
-    <div id="play">Play</div>
+  <p>Like the scholarly research that was done at the LoA, there is nothing cool about most of the stuff on YouTube. Despite what the crappy sketch comedy and and racist video game streamers would suggest, I'd guess about 99% of the content hosted by YouTube exists entirely outside the worlds of trends, careerism, or marketability. Just about every computer and smartphone comes with a camera and a microphone these days, so this YouTube business is incredibly easy, and something about that process/result relationship gives people an opportunity to respond to (and sort of participate in) mass culture that's a lot funnier and more personal than a blog post.</p>
+
+  <p>Anyway, that's just some stuff I was thinking about when I was making this ridiculous thing. It's a thing where you enter a song title and artist, and the thing returns between two and (hopefully) five YouTube videos of people covering that song, then provides the user with the ability to watch the videos <em>in concert</em>. Hopefully the videos are set in the artist's bedroom, and hopefully the covers are done acoustically, but Google disabled the &ldquo;+&rdquo; operator in the search API awhile back, so there's no guarantee that the results will be perfect. I did my best. &ldquo;Everything's Made To Be Broken (Take Comfort In Your Friends)&rdquo; is the official name of the website, and it's named after lyrics from the two songs that caused me to think of this idea. It is optimized for newer browsers, but so is everything else on the internet worth using.</p>
+
+  <p>So yeah. <a href="/">Give it a shot</a>. The URLs don't look it, but they're unique/shareable, so if you find any especially good ones you are encouraged to <a href="mailto:gloveboxjoe@gmail.com">let me know</a>.
+
+    <p id="david">&ldquo;I think there's definitely a set of people for whom this is their worst nightmare.&rdquo; &#8212; <a href="http://davidcole.me" target="_blank">David Cole</a>, on this website.</p>
+
   </div>
 </div>
-
 <div id="meta-links">
-  <a id="about-link" href="about.html">About</a>
+  <a id="about-link" href="">About</a>
   <a id="twitter-link" href="http://twitter.com/blurstoftimes"/>@blurstoftimes</a>
 </div>
 
-  </body>
-  </html>
+</body>
+</html>

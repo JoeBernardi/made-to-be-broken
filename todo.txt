@@ -1,3 +1,2 @@
-- clean up css
 - about page
-- github prep
+- README

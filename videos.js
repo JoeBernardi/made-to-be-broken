@@ -1,4 +1,4 @@
-const youTubeSearch = require('youtube-search');
+const youTubeSearch = require('youtube-search')
 const keys = require('./data/keys')
 
 const youtubeOpts = {
@@ -8,29 +8,28 @@ const youtubeOpts = {
   key: keys.youTubeKey
 }
 
-function getVideoIds(term) {
-   return new Promise((resolve, reject) => {
-     youTubeSearch(`${term} acoustic cover`, youtubeOpts, (err, results) => {
-       let validResults = results.filter((result) => {
-         let title = result.title;
-         let predicate = (
+function getVideoIds (term) {
+  return new Promise((resolve, reject) => {
+    youTubeSearch(`${term} acoustic cover`, youtubeOpts, (err, results) => {
+      let validResults = results.filter((result) => {
+        let title = result.title
+        let predicate = (
            title.match(/cover/i) &&
            title.match(/acoustic/i) &&
            !title.match(/live/i) &&
            !title.match(/lyrics/i)
          )
-         return predicate
-       })
-       if(err) {
-         reject(err);
-       }
-       else if(validResults.length < 2) {
-         reject("noJams")
-       } else {
-         resolve(validResults.splice(0,5).map((result) => result.id))
-       }
-     })
-   })
+        return predicate
+      })
+      if (err) {
+        reject(err)
+      } else if (validResults.length < 2) {
+        reject('noJams')
+      } else {
+        resolve(validResults.splice(0, 5).map((result) => result.id))
+      }
+    })
+  })
 }
 
-module.exports = getVideoIds;
+module.exports = getVideoIds

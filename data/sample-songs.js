@@ -1,4 +1,10 @@
 module.exports = [{
+	"artist": "The Goo Goo Dolls",
+	"title": "Iris"
+}, {
+	"artist": "R.E.M.",
+	"title": "Everybody Hurts"
+}, {
 	"artist": "Led Zeppelin",
 	"title": "Stairway To Heaven"
 }, {
