@@ -410,9 +410,6 @@ module.exports = [{
 	"artist": "Grateful Dead",
 	"title": "Truckin'"
 }, {
-	"artist": "Def Leppard",
-	"title": "Rock Of Ages"
-}, {
 	"artist": "Pink Floyd",
 	"title": "Wish You Were Here"
 }, {
@@ -926,9 +923,6 @@ module.exports = [{
 	"artist": "Rolling Stones",
 	"title": "Tumbling Dice"
 }, {
-	"artist": "George Thorogood",
-	"title": "One Bourbon, One Scotch, One Beer"
-}, {
 	"artist": "John Mellencamp",
 	"title": "Authority Song"
 }, {
@@ -994,9 +988,6 @@ module.exports = [{
 }, {
 	"artist": "Billy Idol",
 	"title": "Dancing With Myself"
-}, {
-	"artist": "Lynyrd Skynyrd",
-	"title": "What's Your Name"
 }, {
 	"artist": "Living Colour",
 	"title": "Cult Of Personality"
@@ -1072,9 +1063,6 @@ module.exports = [{
 }, {
 	"artist": "Bob Seger",
 	"title": "Against The Wind"
-}, {
-	"artist": "Guns N' Roses",
-	"title": "Live And Let Die"
 }, {
 	"artist": "Steve Miller",
 	"title": "Fly Like An Eagle"
@@ -1294,9 +1282,6 @@ module.exports = [{
 }, {
 	"artist": "Journey",
 	"title": "Stone In Love"
-}, {
-	"artist": "AC/DC",
-	"title": "Rock and Roll Ain't Noise Pollution"
 }, {
 	"artist": "Supertramp",
 	"title": "Take The Long Way Home"
