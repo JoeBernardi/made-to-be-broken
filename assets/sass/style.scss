@@ -30,19 +30,22 @@ body {
 	}
 
 	#content {
+		padding-top: 80px;
+		position: relative;
 		#error {
+			position: absolute;
 			font-family: $serif;
 	    text-align: center;
 	    padding-top: 30px;
-	    position: absolute;
 	    width: 100%;
 	    color: #FF0033;
 	    font-size: 22px;
+			top: 0;
 		}
 
 		#initial-form {
 			width: 75%;
-			margin: 80px auto;
+			margin: 0 auto;
 			text-align: center;
 			font-family: $sans;
 			label {

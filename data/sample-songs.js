@@ -341,9 +341,6 @@ module.exports = [{
 	"artist": "Cream",
 	"title": "Sunshine Of Your Love"
 }, {
-	"artist": "Billy Squier",
-	"title": "The Stroke"
-}, {
 	"artist": "Clash",
 	"title": "Rock The Casbah"
 }, {

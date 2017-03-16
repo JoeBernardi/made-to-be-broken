@@ -47,7 +47,7 @@ function getResults (song, artist) {
   const headers = {
     'Content-Type': 'application/json'
   }
-  request.post({url: '/', body: JSON.stringify(data), headers: headers}, function (err, resp) {
+  request.post({url: window.location.href, body: JSON.stringify(data), headers: headers}, function (err, resp) {
     if (err) {
       console.log(err)
     }
@@ -57,7 +57,7 @@ function getResults (song, artist) {
       const hash = base64.encode(`${song}///${artist}`)
       window.history.pushState({}, 'Title', `?j=${hash}`)
     }
-    resp.body === 'noJams' ? resetState('&#8650 Nuts: couldn\'t find enough videos. Try again! &#8650') : stageVideoHtml(JSON.parse(resp.body))
+    resp.body === 'noJams' ? resetState('&#8650 Nuts: Couldn\'t find enough videos. Try again! &#8650') : stageVideoHtml(JSON.parse(resp.body))
   })
 }
 
