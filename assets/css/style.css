@@ -99,7 +99,7 @@ body {
       margin: 0 auto 30px;
       font-family: "Roboto", "sans serif";
       clear: both;
-      width: 400px; }
+      text-align: center; }
       body #content #videos-container #controls div {
         text-align: center;
         cursor: pointer;
@@ -110,8 +110,8 @@ body {
         padding: 15px 0;
         font-size: 22px;
         width: 150px;
-        float: left;
-        margin-top: 35px;
+        display: inline-block;
+        margin: 35px 25px;
         font-family: "Arvo", serif;
         text-transform: uppercase; }
         body #content #videos-container #controls div:hover {
