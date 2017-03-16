@@ -9,15 +9,18 @@ body {
     color: #fff;
     font-weight: bold;
     text-transform: uppercase;
-    padding: 25px 0; }
+    padding: 32px 0; }
     body #header a {
       color: #fff;
       text-decoration: none; }
     body #header h1 {
       font-size: 36px;
-      margin-bottom: 10px; }
+      margin: 0 0 10px 0; }
+    body #header h2 {
+      font-size: 28px;
+      margin: 0; }
   body #content {
-    padding-top: 80px;
+    padding-top: 65px;
     position: relative; }
     body #content #error {
       position: absolute;
@@ -96,7 +99,7 @@ body {
       body #content #videos-container h1 {
         font-family: "Arvo", serif;
         text-align: center;
-        margin: 40px auto;
+        margin: 0 auto 40px;
         font-size: 24px;
         text-transform: capitalize; }
       body #content #videos-container #controls {

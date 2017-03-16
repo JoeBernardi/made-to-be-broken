@@ -8,6 +8,7 @@ let playerRefs = []
 
 let artistInput = ''
 let songInput = ''
+let errorArea = ''
 
 document.addEventListener('DOMContentLoaded', function () {
   checkForQuery() ? getResults(...checkForQuery()) : ''
@@ -20,6 +21,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   artistInput = document.getElementById('artist')
   songInput = document.getElementById('song-title')
+  errorArea = document.getElementById('error')
 
   utils.randomJam(artistInput, songInput)
 
@@ -41,6 +43,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
 function getResults (song, artist) {
   document.body.classList.add('searching')
+  errorArea.innerHTML = ''
+
   const data = {
     search: `${artist} ${song}`
   }
@@ -95,7 +99,7 @@ function resetState (err) {
   utils.randomJam(artistInput, songInput)
   window.history.pushState({}, 'Title', '/')
   if (err) {
-    document.getElementById('error').innerHTML = err
+    errorArea.innerHTML = err
   }
   document.body.classList = ''
   playerRefs = []
