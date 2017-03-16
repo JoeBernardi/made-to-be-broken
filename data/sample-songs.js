@@ -1417,7 +1417,4 @@ module.exports = [{
 }, {
 	"artist": "Bachman-Turner Overdrive",
 	"title": "Takin' Care Of Business"
-}, {
-	"artist": "Van Halen",
-	"title": "Everybody Wants Some"
 }]
