@@ -1056,7 +1056,7 @@ module.exports = [{
 	"title": "All Night Long"
 }, {
 	"artist": "R.E.M.",
-	"title": "It's The End Of The World As We Know It&nbsp;"
+	"title": "It's The End Of The World As We Know It"
 }, {
 	"artist": "Tom Petty",
 	"title": "Don't Do Me Like That"
@@ -1257,7 +1257,7 @@ module.exports = [{
 	"title": "All Right Now"
 }, {
 	"artist": "Boston",
-	"title": "Smokin'&nbsp;&nbsp;"
+	"title": "Smokin'"
 }, {
 	"artist": "Nirvana",
 	"title": "All Apologies"
@@ -1382,7 +1382,7 @@ module.exports = [{
 	"artist": "Def Leppard",
 	"title": "Hysteria"
 }, {
-	"artist": "War&nbsp;",
+	"artist": "War",
 	"title": "Low Rider"
 }, {
 	"artist": "Aerosmith",
