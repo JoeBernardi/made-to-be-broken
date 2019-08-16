@@ -4,13 +4,14 @@ const keys = require('./data/keys')
 const youtubeOpts = {
   maxResults: 50,
   type: 'video',
-  videoEmbeddable: true,
+  videoEmbeddable: "true",
   key: keys.youTubeKey
 }
 
 function getVideoIds (term) {
   return new Promise((resolve, reject) => {
     youTubeSearch(`${term} acoustic cover`, youtubeOpts, (err, results) => {
+      console.log(results);
       let validResults = results.filter((result) => {
         let title = result.title
         let predicate = (
