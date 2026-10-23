@@ -1,4 +1,4 @@
-module.exports = [{
+export default [{
 	"artist": "The Goo Goo Dolls",
 	"title": "Iris"
 }, {

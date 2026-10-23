@@ -1,44 +1,43 @@
-const Express = require('express')
-const bodyParser = require('body-parser')
-const browserify = require('browserify-middleware')
-const sassMiddleware = require('node-sass-middleware')
-const MobileDetect = require('mobile-detect')
+import express from 'express'
+import path from 'node:path'
 
-const getVideos = require('./videos')
+import { searchCovers } from './videos.js'
 
-const app = new Express()
-const root = __dirname
+if (!process.env.YOUTUBE_API_KEY) {
+  console.error('YOUTUBE_API_KEY is not set: copy .env.example to .env and add a YouTube Data API v3 key.')
+  process.exit(1)
+}
 
-app.get('/assets/js/bundle.js', browserify(root + '/assets/js/main.js'))
+const root = import.meta.dirname
+const port = process.env.PORT ?? 8081
+const mobileUserAgent = /Mobi|Android|iPhone|iPad|iPod|Tablet/i
 
-app.use(
-  sassMiddleware({
-    src: '/sass',
-    dest: '/css',
-    root: `${root}/assets`,
-    debug: true
-  })
-)
+const app = express()
 
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: true }))
+app.use(express.static(path.join(root, 'assets'), { maxAge: '1d' }))
 
-app.use(Express.static('assets'))
+app.get('/api/covers', async (req, res) => {
+  const q = typeof req.query.q === 'string' ? req.query.q.trim() : ''
+  if (!q || q.length > 200) {
+    return res.status(400).json({ error: 'bad_request' })
+  }
 
-app.post('/', function (req, res) {
-  res.setHeader('Content-Type', 'application/json')
-  getVideos(req.body.search)
-    .then((videoIds) => res.status(200).send(JSON.stringify(videoIds)),
-          (err) => res.send(err))
-})
-
-app.get('/', function (req, res) {
-  const md = new MobileDetect(req.headers['user-agent']);
-  if (md.mobile()) {
-    res.sendFile('/templates/index-mobile.html', { root: __dirname });
-  } else {
-    res.sendFile('/templates/index.html', { root: __dirname })
+  try {
+    const videoIds = await searchCovers(q)
+    return res.json({ videoIds })
+  } catch (err) {
+    if (err.code === 'noJams') {
+      return res.status(404).json({ error: 'noJams' })
+    }
+    console.error(err)
+    return res.status(502).json({ error: 'youtube_unavailable' })
   }
 })
 
-app.listen(8081, () => console.log('🐚  🐚  🐚   S E R V E R  U P  🐚  🐚  🐚'))
+app.get('/', (req, res) => {
+  const isMobile = mobileUserAgent.test(req.get('user-agent') ?? '')
+  const template = isMobile ? 'index-mobile.html' : 'index.html'
+  res.sendFile(path.join(root, 'templates', template))
+})
+
+app.listen(port, () => console.log('🐚  🐚  🐚   S E R V E R  U P  🐚  🐚  🐚'))

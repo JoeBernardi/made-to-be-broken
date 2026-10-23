@@ -1,114 +1,153 @@
-const request = require('browser-request')
-const youTubeIframeLoader = require('youtube-iframe')
-const base64 = require('base-64')
-const utils = require('../../utils')
+import sampleSongs from './sample-songs.js'
 
-let preparedVideos = 0
+const READY_FALLBACK_MS = 10_000
+const NO_JAMS_MESSAGE = "⇊ Nuts: Couldn't find enough videos. Try again! ⇊"
+const GENERIC_ERROR_MESSAGE = '⇊ Something went wrong. Try again! ⇊'
+
+const artistInput = document.getElementById('artist')
+const songInput = document.getElementById('song-title')
+const errorArea = document.getElementById('error')
+
 let playerRefs = []
+let preparedVideos = 0
+let readyTimer = null
+let searchId = 0
+let youTubeApi = null
 
-let artistInput = ''
-let songInput = ''
-let errorArea = ''
-
-document.addEventListener('DOMContentLoaded', function () {
-  checkForQuery() ? getResults(...checkForQuery()) : ''
-
-  const searchButton = document.getElementById('submit')
-  const playButton = document.getElementById('play')
-  const stopButton = document.getElementById('stop')
-  const suggestion = document.getElementById('suggestion')
-  const aboutLink = document.getElementById('about-link')
-
-  artistInput = document.getElementById('artist')
-  songInput = document.getElementById('song-title')
-  errorArea = document.getElementById('error')
-
-  utils.randomJam(artistInput, songInput)
-
-  searchButton.addEventListener('click', () =>
-    getResults(songInput.value, artistInput.value))
-
-  playButton.addEventListener('click', function () {
-    playerRefs.forEach((video) => video.playVideo())
-  })
-
-  aboutLink.addEventListener('click', function (e) {
-    e.preventDefault()
-    document.body.classList.toggle('about')
-  })
-  suggestion.addEventListener('click', () => utils.randomJam(artistInput, songInput))
-
-  stopButton.addEventListener('click', () => resetState())
-})
-
-function getResults (song, artist) {
-  document.body.classList.add('searching')
-  errorArea.innerHTML = ''
-
-  const data = {
-    search: `${artist} ${song}`
-  }
-  const headers = {
-    'Content-Type': 'application/json'
-  }
-  request.post({url: window.location.href, body: JSON.stringify(data), headers: headers}, function (err, resp) {
-    if (err) {
-      console.log(err)
-    }
-    document.getElementById('big-artist').innerHTML = artist
-    document.getElementById('big-title').innerHTML = song
-    if (!checkForQuery()) {
-      const hash = base64.encode(`${song}///${artist}`)
-      window.history.pushState({}, 'Title', `?j=${hash}`)
-    }
-    resp.body === 'noJams' ? resetState('&#8650 Nuts: Couldn\'t find enough videos. Try again! &#8650') : stageVideoHtml(JSON.parse(resp.body))
-  })
+const randomJam = () => {
+  const jam = sampleSongs[Math.floor(Math.random() * sampleSongs.length)]
+  artistInput.value = jam.artist
+  songInput.value = jam.title
 }
 
-function stageVideoHtml (videoArray) {
+const loadYouTubeApi = () => {
+  if (youTubeApi) return youTubeApi
+  youTubeApi = new Promise((resolve) => {
+    if (window.YT?.Player) return resolve(window.YT)
+    window.onYouTubeIframeAPIReady = () => resolve(window.YT)
+    const script = document.createElement('script')
+    script.src = 'https://www.youtube.com/iframe_api'
+    document.head.appendChild(script)
+  })
+  return youTubeApi
+}
+
+const encodeJam = (text) =>
+  btoa(String.fromCharCode(...new TextEncoder().encode(text)))
+
+const decodeJam = (encoded) => {
+  const bytes = atob(encoded)
+  try {
+    return new TextDecoder('utf-8', { fatal: true })
+      .decode(Uint8Array.from(bytes, (c) => c.charCodeAt(0)))
+  } catch {
+    return bytes
+  }
+}
+
+const checkForQuery = () => {
+  // Read j raw: base64 can contain "+", which URLSearchParams would turn into a space.
+  const match = /[?&]j=([^&]*)/.exec(window.location.search)
+  if (!match) return null
+  try {
+    const [song, artist] = decodeJam(decodeURIComponent(match[1])).split('///')
+    return artist === undefined ? null : [song, artist]
+  } catch {
+    return null
+  }
+}
+
+const revealPlayers = () => {
+  clearTimeout(readyTimer)
+  readyTimer = null
+  document.body.classList.remove('searching')
+  document.body.classList.add('searched')
+}
+
+const onPlayerReady = () => {
+  if (++preparedVideos === playerRefs.length) revealPlayers()
+}
+
+const resetState = (message) => {
+  searchId++
+  clearTimeout(readyTimer)
+  readyTimer = null
+
   const videoContainer = document.getElementById('video')
-  videoArray.forEach((videoId, index) => {
-    const node = document.createElement('div')
-    node.setAttribute('id', `video-${index}`)
-    videoContainer.appendChild(node)
-    youTubeIframeLoader.load(function (YT) {
-      playerRefs.push(new YT.Player(`video-${index}`, {
-        height: '250',
-        width: '640',
-        videoId: videoId,
-        events: {
-          'onReady': onPlayerReady
-        }
-      }))
-    })
-  })
-}
+  videoContainer.replaceWith(videoContainer.cloneNode(false))
 
-function onPlayerReady (event) {
-  if (++preparedVideos === playerRefs.length - 1) {
-    document.body.classList.remove('searching')
-    document.body.classList.add('searched')
-  }
-}
-
-function resetState (err) {
-  const videoContainer = document.getElementById('video')
-  var cNode = videoContainer.cloneNode(false)
-  videoContainer.parentNode.replaceChild(cNode, videoContainer)
-
-  utils.randomJam(artistInput, songInput)
+  randomJam()
   window.history.pushState({}, 'Title', '/')
-  if (err) {
-    errorArea.innerHTML = err
-  }
-  document.body.classList = ''
+  if (message) errorArea.textContent = message
+
+  document.body.className = ''
   playerRefs = []
   preparedVideos = 0
 }
 
-function checkForQuery () {
-  var match = RegExp('[?&]j=([^&]*)').exec(window.location.search)
-  return match
-    ? base64.decode(decodeURIComponent(match[1].replace(/\+/g, ' '))).split('///')
-    : false
+const stageVideoHtml = async (videoIds) => {
+  const thisSearch = searchId
+  const videoContainer = document.getElementById('video')
+  videoIds.forEach((_, index) => {
+    const node = document.createElement('div')
+    node.id = `video-${index}`
+    videoContainer.appendChild(node)
+  })
+
+  const YT = await loadYouTubeApi()
+  if (thisSearch !== searchId) return
+  playerRefs = videoIds.map((videoId, index) => new YT.Player(`video-${index}`, {
+    height: '250',
+    width: '640',
+    videoId,
+    events: { onReady: onPlayerReady }
+  }))
+  readyTimer = setTimeout(revealPlayers, READY_FALLBACK_MS)
 }
+
+const getResults = async (song, artist) => {
+  document.body.classList.add('searching')
+  errorArea.textContent = ''
+
+  let res
+  let body
+  try {
+    res = await fetch('/api/covers?q=' + encodeURIComponent(`${artist} ${song}`))
+    body = await res.json()
+  } catch (err) {
+    console.error(err)
+    return resetState(GENERIC_ERROR_MESSAGE)
+  }
+
+  document.getElementById('big-artist').textContent = artist
+  document.getElementById('big-title').textContent = song
+  if (!checkForQuery()) {
+    window.history.pushState({}, 'Title', `?j=${encodeURIComponent(encodeJam(`${song}///${artist}`))}`)
+  }
+
+  if (res.status === 404 && body?.error === 'noJams') return resetState(NO_JAMS_MESSAGE)
+  if (!res.ok || !Array.isArray(body?.videoIds)) return resetState(GENERIC_ERROR_MESSAGE)
+
+  stageVideoHtml(body.videoIds)
+}
+
+randomJam()
+loadYouTubeApi()
+
+document.getElementById('submit').addEventListener('click', () =>
+  getResults(songInput.value, artistInput.value))
+
+document.getElementById('play').addEventListener('click', () =>
+  playerRefs.forEach((player) => player.playVideo()))
+
+document.getElementById('stop').addEventListener('click', () => resetState())
+
+document.getElementById('suggestion').addEventListener('click', randomJam)
+
+document.getElementById('about-link').addEventListener('click', (e) => {
+  e.preventDefault()
+  document.body.classList.toggle('about')
+})
+
+const sharedJam = checkForQuery()
+if (sharedJam) getResults(...sharedJam)
