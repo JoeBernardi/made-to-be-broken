@@ -8,3 +8,11 @@ Search for a song, watch several simultaneous YouTube covers of that song. Every
 3. `npm install`
 4. `npm start` (or `npm run dev` to restart on file changes)
 5. After editing `assets/sass/style.scss`, run `npm run build:css`
+
+## Deploying
+
+The site runs on Fly.io as the app `youtubecover-band` (config in `fly.toml`).
+
+- `fly deploy` builds the Docker image and deploys it
+- `fly secrets set YOUTUBE_API_KEY=...` rotates the API key (this restarts the machine)
+- `fly logs` tails the logs
